@@ -58,12 +58,12 @@
         const app = {
             data() {
                 return {
-                    apiUrl: 'https://vue3-course-api.hexschool.io/v2',
-                    apiPath: 'jeff_hexschool',
-                    user: {
-                        username: '',
-                        password: ''
-                    }
+                  apiUrl: 'https://vue3-course-api.hexschool.io/v2',
+                  apiPath: 'jeff_hexschool',
+                  user: {
+                      username: '',
+                      password: ''
+                  }
                 }
             },
             methods: {
@@ -72,17 +72,14 @@
                   const api = `${this.apiUrl}/admin/signin`;
                   axios.post(api, this.user)
                     .then((res) => {
-                        if(res.data.success){
-                            const { token, expired } = res.data
-                            document.cookie = `shopToken=${token}; expires=${new Date(expired)}`
-                            // 這邊參考 Dora Yu 同學的部分，影音課程的 this.$router跳轉沒過去，忘記是哪邊的套件沒用套還是元件卡住
-                            //this.$router.push('/products')
-                            window.location.assign("products.html");
-                        }
+                      const { token, expired } = res.data
+                      document.cookie = `shopToken=${token}; expires=${new Date(expired)}`
+                      // 這邊參考 Dora Yu 同學的部分，影音課程的 this.$router跳轉沒過去，忘記是哪邊的套件沒用套還是元件卡住
+                      //this.$router.push('/products')
+                      window.location.assign("products.html");
                     })
                     .catch((err) => {
                         alert('登入資料有誤，請確認帳號密碼');
-                        console.log(err.response.data);
                     })
                 }
             }

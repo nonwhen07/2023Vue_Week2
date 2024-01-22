@@ -123,39 +123,35 @@
         const { createApp } = Vue;
         // 建立元件 生成Vue應用程式 渲染至畫面上
         const app = {
-            data() {
-              return {
-                apiUrl: 'https://vue3-course-api.hexschool.io/v2',
-                apiPath: 'jeff_hexschool',
-                selectProduct: {}, //點選產品
-                products : [] //產品菜單 
-              }
+          data() {
+            return {
+              apiUrl: 'https://vue3-course-api.hexschool.io/v2',
+              apiPath: 'jeff_hexschool',
+              selectProduct: {}, //點選產品
+              products : [] //產品菜單 
+            }
+          },
+          methods: {
+            checkSignIn(){
+              const api = `${this.apiUrl}/api/user/check`;
+              axios.post(api)
+                .then((res) => {
+                  this.getProducts()
+                })
+                .catch((err) => {
+                  alert('請重新登入，將轉回登入頁面');
+                  window.location.assign("login.html");
+                })
             },
-            methods: {
-              checkSignIn(){
-                const api = `${this.apiUrl}/api/user/check`;
-                axios.post(api)
-                  .then((res) => {
-                    console.log(res.data);
-                    this.getProducts()
-                  })
-                  .catch((err) => {
-                    alert('請重新登入，將轉回登入頁面');
-                    console.log(err.data);
-                    window.location.assign("login.html");
-                  })
-              },
-              getProducts() {
-                const api = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
-                axios.get(api)
-                  .then((res) => {
-                    console.log('res', res.data.length);
-                    this.products = res.data.products;
-                  })
-              },
-                
+            getProducts() {
+              const api = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
+              axios.get(api)
+                .then((res) => {
+                  this.products = res.data.products;
+                })
             },
-            created () {
+          },
+          created () {
               const token = document.cookie.replace(
                 /(?:(?:^|.*;\s*)shopToken\s*\=\s*([^;]*).*$)|^.*$/,
                 "$1"
