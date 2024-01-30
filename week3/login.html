@@ -67,21 +67,19 @@
                 }
             },
             methods: {
-                signIn () {
-                  console.log(this.user);
-                  const api = `${this.apiUrl}/admin/signin`;
-                  axios.post(api, this.user)
-                    .then((res) => {
-                      const { token, expired } = res.data
-                      document.cookie = `shopToken=${token}; expires=${new Date(expired)}`
-                      // 這邊參考 Dora Yu 同學的部分，影音課程的 this.$router跳轉沒過去，忘記是哪邊的套件沒用套還是元件卡住
-                      //this.$router.push('/products')
-                      window.location.assign("/week3/productList.html");
-                    })
-                    .catch((err) => {
-                        alert('登入資料有誤，請確認帳號密碼');
-                    })
-                }
+              signIn () {
+                console.log(this.user);
+                const api = `${this.apiUrl}/admin/signin`;
+                axios.post(api, this.user)
+                  .then((res) => {
+                    const { token, expired } = res.data
+                    document.cookie = `shopToken=${token}; expires=${new Date(expired)}`;
+                    window.location.assign("/2023Vue_Week2/week3/productList.html");
+                  })
+                  .catch((err) => {
+                      alert('登入資料有誤，請確認帳號密碼');
+                  })
+              }
             }
         };
         
