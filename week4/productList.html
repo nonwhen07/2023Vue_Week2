@@ -85,27 +85,7 @@
       </div>
 
       <!-- pagination -->
-      <nav aria-label="Page navigation example">
-        <ul class="pagination  justify-content-center">
-
-          <li class="page-item" :class="{ 'disabled': pagination.has_pre === false }">
-            <a class="page-link" href="#" aria-label="Previous"
-              @click.prevent="updatePage(pagination.current_page-1)">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in pagination.total_pages" :key="page"
-            :class="{ 'disabled': pagination.current_page === page }">
-            <a class="page-link" href="#" @click.prevent="updatePage(page)">{{page}}</a>
-          </li>
-          <li class="page-item" :class="{ 'disabled': pagination.has_next === false }">
-            <a class="page-link" href="#" aria-label="Next"
-              @click.prevent="updatePage(pagination.current_page+1)">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <pagination :pages="pages" :get-products="getProducts" ></pagination>
       <!-- pagination -->
 
 
@@ -118,7 +98,7 @@
                 <span v-if="tempProduct.title">{{tempProduct.title}}</span>
                 <span v-else>新增產品</span>
               </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="claerData()"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <div class="row">
@@ -201,8 +181,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
-                @click="claerData()">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 取消
               </button>
               <button type="button" class="btn btn-primary"
@@ -213,32 +192,8 @@
           </div>
         </div>
       </div>
-      <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
-           aria-labelledby="delProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content border-0">
-            <div class="modal-header bg-danger text-white">
-              <h5 id="delProductModalLabel" class="modal-title">
-                <span>刪除產品</span>
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              是否刪除
-              <strong class="text-danger">{{tempProduct.title}}</strong> (刪除後將無法恢復)。
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                取消
-              </button>
-              <button type="button" class="btn btn-danger"
-              @click="delProduct(tempProduct.id)">
-                確認刪除
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
+      <Del-Modal :temp-product="tempProduct" :del-product="delProduct" ref="dModal"></Del-Modal>
       <!-- Modal -->
     </div>
 
@@ -252,6 +207,8 @@
             integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
             crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    
     <script type="module">
       const { createApp } = Vue;
 
@@ -261,6 +218,9 @@
       //   template:``
       // };
 
+      import pagination from './components/pagination.js';
+      import DelModal from './components/delProductModal.js';
+      
 
 
       const app = createApp({
@@ -272,10 +232,10 @@
             tempProduct: {}, //點選產品
             selectID: '', //點選產品ID
             products : [], //產品菜單
-            pagination: {}, //產品菜單-頁碼
+            pages: {}, //產品菜單-頁碼
 
-            productModal: '', 
-            delModal: '',
+            productModal: null, 
+            //delModal: null,
           }
         },
         methods: {
@@ -296,7 +256,7 @@
             axios.get(api)
             .then((res) => {
               this.products = res.data.products;
-              this.pagination = res.data.pagination;
+              this.pages = res.data.pagination;
             })
           },
           openModal(isNew, item) {
@@ -330,7 +290,8 @@
             axios[httpMethod](api)
             .then((res) => {
               this.getProducts();
-              this.delModal.hide();
+              //this.delModal.hide();
+              this.$refs.dModal.closeModal();
             })
             .catch((err) => {
               alert(err.data.message);
@@ -346,14 +307,12 @@
           delImage(index) {
             this.tempProduct.imagesUrl.splice(index, 1);
           },
-          clearData() {
-            this.tempProduct = {}; 
-            this.isNew = false;
-          },
+          // clearData() {
+          //   this.tempProduct = {}; 
+          //   this.isNew = false;
+          // },
 
-          updatePage(page) {
-            this.getProducts(page);
-          }
+          
         },
         created(){
           const token = document.cookie.replace(
@@ -364,12 +323,15 @@
           this.checkSignIn();
         },
         mounted() {
-          this.productModal = new bootstrap.Modal(document.getElementById('productModal'));
-          this.delModal = new bootstrap.Modal(document.getElementById('delProductModal'));
+          //this.productModal = new bootstrap.Modal(document.getElementById('productModal'));
+          this.productModal = new bootstrap.Modal(this.$refs.productModal);
+          ////this.delModal = new bootstrap.Modal(document.getElementById('delProductModal'));
+          //this.delModal = new bootstrap.Modal(this.$refs.delProductModal);
         },
-        // components: {
-        //   card2
-        // }
+        components: {
+          pagination,
+          DelModal
+        }
       });
 
 
