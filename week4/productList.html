@@ -90,7 +90,7 @@
 
 
       <!-- Modal -->
-      <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+      <!-- <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
@@ -191,7 +191,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
+      <Prod-Modal :temp-product="tempProduct" :updata-product="updataProduct" 
+        :add-image="addImage" :del-image="delImage" ref="pModal"></Prod-Modal>
 
       <Del-Modal :temp-product="tempProduct" :del-product="delProduct" ref="dModal"></Del-Modal>
       <!-- Modal -->
@@ -219,6 +221,7 @@
       // };
 
       import pagination from './components/pagination.js';
+      import ProdModal from './components/productModal.js'
       import DelModal from './components/delProductModal.js';
       
 
@@ -234,7 +237,7 @@
             products : [], //產品菜單
             pages: {}, //產品菜單-頁碼
 
-            productModal: null, 
+            //productModal: null, 
             //delModal: null,
           }
         },
@@ -251,7 +254,6 @@
             })
           },
           getProducts(page = 1) {
-            //const api = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
             const api = `${this.apiUrl}/api/${this.apiPath}/admin/products?page=${page}`;
             axios.get(api)
             .then((res) => {
@@ -262,7 +264,8 @@
           openModal(isNew, item) {
             if (isNew) {
               this.tempProduct = {}
-            } else {
+            } 
+            else {
               this.tempProduct = { ...item }
             }
             this.isNew = isNew
@@ -278,7 +281,8 @@
             .then((res) => {
               this.isNew = false;
               this.getProducts();
-              this.productModal.hide(); 
+              //this.productModal.hide(); 
+              this.$refs.pModal.closeModal(); 
             })
             .catch((err) => {
               alert(err.data.message);
@@ -323,13 +327,12 @@
           this.checkSignIn();
         },
         mounted() {
-          //this.productModal = new bootstrap.Modal(document.getElementById('productModal'));
-          this.productModal = new bootstrap.Modal(this.$refs.productModal);
-          ////this.delModal = new bootstrap.Modal(document.getElementById('delProductModal'));
+          //this.productModal = new bootstrap.Modal(this.$refs.productModal);
           //this.delModal = new bootstrap.Modal(this.$refs.delProductModal);
         },
         components: {
           pagination,
+          ProdModal,
           DelModal
         }
       });

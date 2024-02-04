@@ -73,7 +73,7 @@
                 .then((res) => {
                   const { token, expired } = res.data
                   document.cookie = `shopToken=${token}; expires=${new Date(expired)}`;
-                  window.location.assign("/2023Vue_Week2/week4/productList.html");
+                  window.location.assign("./productList.html");
                 })
                 .catch((err) => {
                     alert('登入資料有誤，請確認帳號密碼');
