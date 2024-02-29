@@ -1,12 +1,15 @@
 export default {
-    props: ['tempProduct', 'updateCart'],
+    props: ['tempProduct', 'addToCart'],
     data() {
         return {
-            userModal: null
+            userModal: null,
+            status: {
+                addCartLoading: '',
+            },
         }
     },
     template: `<div id="userProductModal" ref="userProductModal"  class="modal fade" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true" ref="modal">
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content border-0">
                 <div class="modal-header bg-dark text-white">
@@ -34,8 +37,13 @@ export default {
                         <div class="h5">現在只要 {{ tempProduct.price }} 元</div>
                         <div>
                         <div class="input-group">
-                            <input type="number" class="form-control" min="1" value="1">
-                            <button type="button" class="btn btn-primary" @click="updateCart(tempProduct.id)">
+                            <!-- <input type="number" class="form-control" min="1" value="1" v-model="tempProduct.qty"> -->
+                            <select  class="form-control" min="1" v-model="tempProduct.qty">
+                                <option :value="i" v-for="i in 20" :key="i">{{i}}<option>
+                            </select>
+                            <button type="button" class="btn btn-primary" 
+                                @click="addToCart(tempProduct.id, tempProduct.qty)" :disabled="tempProduct.id === status.addCartLoading">
+                                <span v-if="tempProduct.id === status.addCartLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 加入購物車
                             </button>
                         </div>
