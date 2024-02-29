@@ -27,10 +27,12 @@ const app = createApp({
             products : [], //產品菜單
             pages: {}, //產品菜單-頁碼
             carts: [], //購物車菜單
+            cartslength: 0,
 
             status: {
                 checkProduct:'',
                 addCartLoading: '',
+                cartQtyLoading: '',
                 delCart: '',
             },
 
@@ -70,24 +72,28 @@ const app = createApp({
             const api = `${this.apiUrl}/api/${this.apiPath}/cart`;
             axios.get(api)
             .then((res) => {
-                // console.log('this.cart', res.data.data);
+                // console.log('this.cart', res.data);
                 // console.log('this.cart.carts', res.data.data.carts);
                 this.carts = res.data.data;
+                this.cartslength = res.data.data.carts.length;
+                //console.log('this.cartslength', this.cartslength);
             })
             .catch((err) => {
                 alert(err.data.message);
                 this.isLoading = false;
+                this.carts = [];
+                this.cartslength = 0;
             })
         },
         addToCart(itemId, qty = 1) {
             this.status.addCartLoading = itemId;
-            let api = `${this.apiUrl}/api/${this.apiPath}/cart`; //預設新增，再來判斷isNew
+            let api = `${this.apiUrl}/api/${this.apiPath}/cart`;
             let httpMethod = 'post';
-            let item = {
+            let cart = {
                 product_id: itemId,
                 qty: qty
             }
-            axios[httpMethod](api, { data: item })
+            axios[httpMethod](api, { data: cart })
             .then((res) => {
                 this.getCarts();
                 this.$refs.uModal.closeModal();
@@ -98,25 +104,25 @@ const app = createApp({
             //     this.status.addCartLoading = '';
             // })
         },
-        // addToCart(item) {
-        //     this.status.addCartLoading = itemId;
-        //     let api = `${this.apiUrl}/api/${this.apiPath}/cart`; //預設新增，再來判斷isNew
-        //     let httpMethod = 'post';
-        //     let dataItem = {
-        //         product_id: item.id,
-        //         qty: item.qty
-        //     }
-        //     axios[httpMethod](api, { data: dataItem })
-        //     .then((res) => {
-        //         this.getCarts();
-        //         this.$refs.uModal.closeModal();
-        //         this.status.addCartLoading = '';
-        //     })
-        //     // .catch((err) => {
-        //     //     alert(err.data.message);
-        //     //     this.status.addCartLoading = '';
-        //     // })
-        // },
+        cartChangeQty(item, qty = 1) {
+            this.status.cartQtyLoading = item.id;
+            let api = `${this.apiUrl}/api/${this.apiPath}/cart/${item.id}`;
+            let httpMethod = 'put';
+            let order = {
+                product_id: item.id,
+                qty: qty
+            }
+            axios[httpMethod](api, { data: order })
+            .then((res) => {
+                this.getCarts();
+                this.$refs.uModal.closeModal();
+                this.status.cartQtyLoading = '';
+            })
+            .catch((err) => {
+                alert(err.data.message);
+                this.status.cartQtyLoading = '';
+            })
+        },
         delCart(itemID) {
             this.status.delCart = itemID;
             let api = `${this.apiUrl}/api/${this.apiPath}/cart/${itemID}`; //預設新增，再來判斷isNew
@@ -145,8 +151,22 @@ const app = createApp({
             //     this.status.delCart='';
             // })
         },
-        onSubmit(item){
-
+        sendOrder(){
+            let api = `${this.apiUrl}/api/${this.apiPath}/order`;
+            let httpMethod = 'post';
+            let orderData = {
+                user: this.user,
+                message: this.message
+            }
+            axios[httpMethod](api, { data: orderData })
+            .then((res) => {
+                this.getCarts();
+                //this.user = '';
+                //this.message = '';
+            })
+            .catch((err) => {
+                alert(err.data.message);
+            })
         },
     },
     created(){

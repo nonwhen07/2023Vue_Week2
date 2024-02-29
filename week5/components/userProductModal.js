@@ -37,9 +37,9 @@ export default {
                         <div class="h5">現在只要 {{ tempProduct.price }} 元</div>
                         <div>
                         <div class="input-group">
-                            <!-- <input type="number" class="form-control" min="1" value="1" v-model="tempProduct.qty"> -->
+                            <!-- <input type="number" class="form-control" min="1" value="tempProduct.qty" v-model="tempProduct.qty"> -->
                             <select  class="form-control" min="1" v-model="tempProduct.qty">
-                                <option :value="i" v-for="i in 20" :key="i">{{i}}<option>
+                                <option :value="i" v-for="i in 20" :key="i">{{i}}</option>
                             </select>
                             <button type="button" class="btn btn-primary" 
                                 @click="addToCart(tempProduct.id, tempProduct.qty)" :disabled="tempProduct.id === status.addCartLoading">
@@ -60,6 +60,11 @@ export default {
         // },
         closeModal(item) {
             this.userModal.hide();
+        },
+    },
+    watch: {
+        tempProduct() {
+            this.qty = 1;
         },
     },
     mounted() {
