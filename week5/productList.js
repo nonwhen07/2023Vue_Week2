@@ -28,6 +28,8 @@ const app = createApp({
         axios.post(api)
         .then((res) => {
             this.getProducts();
+            //後台確認Orders用
+            this.getOrders();
         })
         .catch((err) => {
             alert('請重新登入，將轉回登入頁面');
@@ -62,7 +64,6 @@ const app = createApp({
             .then((res) => {
                 this.isNew = false;
                 this.getProducts();
-                //this.productModal.hide(); 
                 this.$refs.pModal.closeModal(); 
             })
             .catch((err) => {
@@ -75,7 +76,6 @@ const app = createApp({
             axios[httpMethod](api)
             .then((res) => {
                 this.getProducts();
-                //this.delModal.hide();
                 this.$refs.dModal.closeModal();
             })
             .catch((err) => {
@@ -92,10 +92,29 @@ const app = createApp({
         delImage(index) {
         this.tempProduct.imagesUrl.splice(index, 1);
         },
-        // clearData() {
-        //   this.tempProduct = {}; 
-        //   this.isNew = false;
-        // },
+
+        //後台確認Orders用
+        getOrders() {
+            const api = `${this.apiUrl}/api/${this.apiPath}/admin/orders`;
+            axios.get(api)
+            .then((res) => {
+                console.log('this.Order =>', res.data);
+                console.log('this.Order.Orders =>', res.data.orders);
+            })
+            .catch((err) => {
+                alert(err.data.message);
+            })
+            // 刪除訂單(all)
+            // const api2 = `${this.apiUrl}/api/${this.apiPath}/admin/orders/all`;
+            // axios.delete(api2)
+            // .then((res) => {
+            //     console.log('this.Order =>', res);
+            //     //console.log('this.Order.Orders =>', res.data.orders);
+            // })
+            // .catch((err) => {
+            //     alert(err.data.message);
+            // })
+        },
 
         
     },

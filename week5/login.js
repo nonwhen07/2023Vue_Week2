@@ -28,7 +28,7 @@ const app = {
             alert('登入資料有誤，請確認帳號密碼');
         })
     }
-    }
+  }
 };
 
 createApp(app).mount('#mainApp');

@@ -37,14 +37,16 @@ const app = createApp({
             },
 
             isLoading: false, //loading狀態
-            //購物車user
-            user: {
-                name:'',
-                email: '',
-                tel: '',
-                address: '',
-            },
-            message: '', //購物車user-message
+            form:{
+                //購物車user
+                user: {
+                    name:'',
+                    email: '',
+                    tel: '',
+                    address: '',
+                },
+                message: '', //購物車user-message
+            }
         }
     },
     methods: {
@@ -99,10 +101,10 @@ const app = createApp({
                 this.$refs.uModal.closeModal();
                 this.status.addCartLoading = '';
             })
-            // .catch((err) => {
-            //     alert(err.data.message);
-            //     this.status.addCartLoading = '';
-            // })
+            .catch((err) => {
+                alert(err.data.message);
+                this.status.addCartLoading = '';
+            })
         },
         cartChangeQty(item, qty = 1) {
             this.status.cartQtyLoading = item.id;
@@ -132,10 +134,10 @@ const app = createApp({
                 this.getCarts();
                 this.status.delCart='';
             })
-            // .catch((err) => {
-            //     alert(err.data.message);
-            //     this.status.delCart='';
-            // })
+            .catch((err) => {
+                alert(err.data.message);
+                this.status.delCart='';
+            })
         },
         delAllCart() {
             this.status.delCart = 'delAll';
@@ -146,28 +148,27 @@ const app = createApp({
                 this.getCarts();
                 this.status.delCart='';
             })
-            // .catch((err) => {
-            //     alert(err.data.message);
-            //     this.status.delCart='';
-            // })
-        },
-        sendOrder(){
-            let api = `${this.apiUrl}/api/${this.apiPath}/order`;
-            let httpMethod = 'post';
-            let orderData = {
-                user: this.user,
-                message: this.message
-            }
-            axios[httpMethod](api, { data: orderData })
-            .then((res) => {
-                this.getCarts();
-                //this.user = '';
-                //this.message = '';
-            })
             .catch((err) => {
                 alert(err.data.message);
+                this.status.delCart='';
             })
         },
+        sendOrder() {
+            this.isLoading = true;
+            let api = `${this.apiUrl}/api/${this.apiPath}/order`;
+            const order = this.form;
+            axios.post(api, { data: order })
+              .then((res) => {
+                //alert(res.data.message);
+                this.getCarts();
+                this.$refs.form.resetForm();
+                this.isLoading = false;
+              })
+              .catch((err) => {
+                alert(err.data.message);
+                this.isLoading = false;
+              });
+          },
     },
     created(){
     },
