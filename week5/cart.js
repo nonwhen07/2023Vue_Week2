@@ -169,6 +169,10 @@ const app = createApp({
                 this.isLoading = false;
               });
           },
+          isPhone(value) {
+            const phoneNumber = /^(09)[0-9]{8}$/
+            return phoneNumber.test(value) ? true : '電話為必填，須為有效的電話號碼'
+          },
     },
     created(){
     },
